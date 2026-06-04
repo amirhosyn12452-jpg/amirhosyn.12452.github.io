@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="وب‌سایت شخصی امیرحسین قندالی - برنامه‌نویس جوان، علاقه‌مند به هوش مصنوعی و تکنولوژی" />
+  <meta name="keywords" content="امیرحسین قندالی, برنامه‌نویسی, هوش مصنوعی, تکنولوژی, وب" />
+  <meta name="author" content="AmirHossein Ghandali" />
+  <meta property="og:title" content="امیرحسین قندالی | وب‌سایت شخصی" />
+  <meta property="og:description" content="۱۵ ساله، عاشق تکنولوژی، در مسیر یادگیری بی‌پایان" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#8B5CF6" />
+  <title>امیرحسین قندالی | وب‌سایت شخصی</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0A0A0A;
+      --bg-secondary: #0F0F1A;
+      --purple: #8B5CF6;
+      --purple-light: #A78BFA;
+      --blue: #00BFFF;
+      --blue-light: #38D1FF;
+      --white: #FFFFFF;
+      --white-dim: rgba(255,255,255,0.85);
+      --glass-bg: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.08);
+      --glass-hover: rgba(255,255,255,0.08);
+      --text-muted: rgba(255,255,255,0.5);
+      --shadow-purple: 0 0 30px rgba(139,92,246,0.3);
+      --radius: 20px;
+      --radius-sm: 12px;
+      --transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg-primary);
+      color: var(--white);
+      direction: rtl;
+      /* FIX: overflow-x hidden فقط روی body، نه html — جلوگیری از مشکل scroll موبایل */
+      overflow-x: hidden;
+      line-height: 1.8;
+    }
+
+    /* FIX: وقتی منوی موبایل بازه، اسکرول body قفل بشه */
+    body.menu-open { overflow: hidden; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--purple-light); }
+
+    /* پس‌زمینه */
+    #particles-canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
+    }
+
+    .gradient-bg {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%; z-index: 0;
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(139,92,246,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, rgba(0,191,255,0.08) 0%, transparent 60%);
+      animation: gradientShift 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes gradientShift {
+      0%   { opacity: 1; transform: scale(1); }
+      100% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    /* ناوبری */
+    nav {
+      position: fixed; top: 0; right: 0; left: 0; z-index: 1000;
+      padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(10,10,10,0.7);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      transition: var(--transition);
+    }
+
+    nav.scrolled { padding: 12px 40px; background: rgba(10,10,10,0.92); }
+
+    .nav-logo {
+      font-size: 1.3rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links { display: flex; gap: 8px; list-style: none; align-items: center; }
+
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none;
+      font-size: 0.9rem; font-weight: 500;
+      padding: 8px 16px; border-radius: 50px;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover { color: var(--white); background: var(--glass-bg); }
+
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 8px; border-radius: 8px;
+      background: none; border: none;
+      transition: var(--transition);
+    }
+
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      /* FIX: از display:none/flex استفاده نمی‌کنیم — از visibility + opacity استفاده می‌کنیم
+         تا انیمیشن درست کار کنه و accessibility هم حفظ بشه */
+      position: fixed;
+      top: 0; right: 0; left: 0; bottom: 0; z-index: 999;
+      background: rgba(10,10,10,0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column; align-items: center; justify-content: center; gap: 24px;
+      visibility: hidden; opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .mobile-menu.open { visibility: visible; opacity: 1; }
+
+    .mobile-menu a {
+      color: var(--white); text-decoration: none;
+      font-size: 1.6rem; font-weight: 700;
+      padding: 12px 32px; border-radius: 12px;
+      transition: var(--transition);
+    }
+
+    .mobile-menu a:hover { background: var(--glass-bg); color: var(--purple-light); }
+
+    /* محتوا */
+    main { position: relative; z-index: 1; }
+
+    section {
+      padding: 100px 40px;
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    /* کامپوننت‌های مشترک */
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800; text-align: center; margin-bottom: 60px;
+    }
+
+    .section-title span {
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-title::after {
+      content: ''; display: block;
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--blue));
+      border-radius: 2px; margin: 16px auto 0;
+    }
+
+    .glass-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      transition: var(--transition); padding: 32px;
+    }
+
+    .glass-card:hover {
+      background: var(--glass-hover);
+      border-color: rgba(139,92,246,0.3);
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-purple);
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 32px; border-radius: 50px;
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 1rem; font-weight: 600;
+      cursor: pointer; text-decoration: none; border: none;
+      transition: var(--transition); position: relative; overflow: hidden;
+    }
+
+    .btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: translateX(-100%); transition: transform 0.5s ease;
+    }
+
+    /* FIX: RTL — شاین افکت باید از چپ بره راست (در RTL جهت برعکسه) */
+    .btn:hover::before { transform: translateX(100%); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple), #6D28D9);
+      color: #fff; box-shadow: 0 0 20px rgba(139,92,246,0.4);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 40px rgba(139,92,246,0.7), 0 0 80px rgba(139,92,246,0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent; color: var(--blue);
+      border: 1px solid var(--blue);
+      box-shadow: 0 0 15px rgba(0,191,255,0.2);
+    }
+
+    .btn-outline:hover {
+      background: rgba(0,191,255,0.1);
+      box-shadow: 0 0 30px rgba(0,191,255,0.5);
+      transform: translateY(-2px);
+    }
+
+    /* انیمیشن ورود */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* Hero */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding-top: 80px; text-align: center; position: relative;
+    }
+
+    .hero-inner {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 32px; max-width: 800px;
+    }
+
+    .avatar-wrapper { position: relative; width: 160px; height: 160px; }
+
+    .avatar-ring {
+      position: absolute; inset: -8px; border-radius: 50%;
+      background: conic-gradient(var(--purple), var(--blue), var(--purple));
+      animation: spin 4s linear infinite; padding: 3px;
+    }
+
+    .avatar-ring-inner {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: var(--bg-primary);
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .avatar {
+      position: absolute; inset: 4px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--bg-secondary), #1A1A2E);
+      border: 2px solid var(--glass-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem;
+    }
+
+    .avatar-glow {
+      position: absolute; inset: -20px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(139,92,246,0.2), transparent 70%);
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50%       { opacity: 1; transform: scale(1.15); }
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(139,92,246,0.1);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: 50px; padding: 8px 20px;
+      font-size: 0.85rem; color: var(--purple-light); font-weight: 500;
+    }
+
+    .badge-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #22C55E; box-shadow: 0 0 8px #22C55E;
+      animation: blink 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    .hero-name {
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      font-weight: 900; line-height: 1.1; letter-spacing: -1px;
+      background: linear-gradient(135deg, #fff 0%, var(--purple-light) 50%, var(--blue) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: heroNameIn 1s ease forwards;
+    }
+
+    @keyframes heroNameIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-subtitle {
+      font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+      color: var(--text-muted); max-width: 600px;
+      line-height: 2; animation: fadeInUp 1s ease 0.3s both;
+      /* FIX: حداقل ارتفاع تا layout shift نداشته باشیم وقتی typewriter تایپ می‌کنه */
+      min-height: 2em;
+    }
+
+    .hero-subtitle strong { color: var(--purple-light); }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-buttons {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeInUp 1s ease 0.6s both;
+    }
+
+    /* FIX: cursor تایپیست — از pseudo-element استفاده می‌کنیم که روی wrapper باشه نه متن */
+    .typewriter-wrapper {
+      display: inline-block;
+      color: var(--purple-light);
+      font-weight: 600;
+    }
+
+    .typewriter-wrapper::after {
+      content: '|';
+      animation: cursor 0.8s step-start infinite;
+      color: var(--purple); margin-right: 2px;
+    }
+
+    @keyframes cursor {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    .scroll-indicator {
+      position: absolute; bottom: 40px;
+      /* FIX: در RTL برای center کردن از left استفاده می‌کنیم با transform */
+      left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      animation: fadeInUp 1s ease 1.2s both;
+      direction: ltr; /* FIX: جلوگیری از RTL offset */
+    }
+
+    .scroll-mouse {
+      width: 24px; height: 40px; border: 2px solid var(--text-muted);
+      border-radius: 12px; position: relative; display: flex; justify-content: center;
+    }
+
+    .scroll-wheel {
+      width: 4px; height: 8px; background: var(--purple);
+      border-radius: 2px; position: absolute; top: 6px;
+      animation: scrollDown 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollDown {
+      0%   { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(16px); }
+    }
+
+    .scroll-text { font-size: 0.75rem; color: var(--text-muted); font-family: 'Vazirmatn', sans-serif; direction: rtl; }
+
+    .hero-stats {
+      display: flex; gap: 40px; flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeInUp 1s ease 0.9s both;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-number {
+      font-size: 2rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; line-height: 1;
+      /* FIX: حداقل عرض تا layout shift نداشته باشیم هنگام شمردن */
+      min-width: 80px; display: inline-block;
+    }
+
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* درباره من */
+    #about .about-grid {
+      display: grid; grid-template-columns: 1fr 2fr; gap: 32px; align-items: start;
+    }
+
+    .about-info-card { position: sticky; top: 100px; }
+
+    .about-info-card .info-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 0; border-bottom: 1px solid var(--glass-border);
+      font-size: 0.95rem;
+    }
+
+    .about-info-card .info-row:last-child { border-bottom: none; }
+
+    .info-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(139,92,246,0.1); font-size: 1.1rem; flex-shrink: 0;
+    }
+
+    .info-label { color: var(--text-muted); font-size: 0.8rem; display: block; line-height: 1; margin-bottom: 2px; }
+    .info-value { font-weight: 600; font-size: 0.95rem; }
+
+    .about-text-card { display: flex; flex-direction: column; gap: 0; }
+    .about-desc { font-size: 1.05rem; color: var(--white-dim); line-height: 2.2; margin-bottom: 20px; }
+    .about-desc:last-child { margin-bottom: 0; }
+    .highlight { color: var(--purple-light); font-weight: 600; }
+    .highlight-blue { color: var(--blue-light); font-weight: 600; }
+
+    /* علایق */
+    #interests .interests-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;
+    }
+
+    .interest-card { text-align: center; padding: 36px 24px; cursor: default; }
+
+    .interest-icon {
+      font-size: 3rem; margin-bottom: 16px; display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .interest-card:hover .interest-icon { transform: scale(1.2) rotate(10deg); }
+
+    .interest-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+    .interest-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
+
+    /* بازی‌ها */
+    #games .games-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;
+    }
+
+    .game-card { padding: 32px; cursor: default; position: relative; overflow: hidden; }
+
+    .game-card::before {
+      content: ''; position: absolute; top: 0; right: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--blue));
+      transform: scaleX(0); transform-origin: right; transition: transform 0.4s ease;
+    }
+
+    .game-card:hover::before { transform: scaleX(1); }
+
+    .game-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+
+    .game-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(0,191,255,0.1));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; border: 1px solid var(--glass-border);
+      flex-shrink: 0; transition: var(--transition);
+    }
+
+    .game-card:hover .game-icon {
+      background: linear-gradient(135deg, rgba(139,92,246,0.4), rgba(0,191,255,0.2));
+      box-shadow: var(--shadow-purple);
+    }
+
+    .game-name { font-size: 1.2rem; font-weight: 700; }
+    .game-genre { font-size: 0.8rem; color: var(--purple-light); margin-top: 4px; font-weight: 500; }
+    .game-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; }
+
+    .game-tag {
+      display: inline-block; padding: 4px 12px; border-radius: 20px;
+      background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);
+      font-size: 0.75rem; color: var(--purple-light); margin-top: 16px;
+    }
+
+    /* مهارت‌ها */
+    #skills .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px;
+    }
+
+    .skill-card { padding: 28px; }
+
+    .skill-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+    .skill-icon { font-size: 1.8rem; }
+    .skill-title { font-size: 1.1rem; font-weight: 700; }
+    .skill-level { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+    .skill-item { margin-bottom: 18px; }
+    .skill-item:last-child { margin-bottom: 0; }
+
+    .skill-info {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 8px; font-size: 0.88rem;
+    }
+
+    .skill-name { font-weight: 500; }
+    .skill-percent { color: var(--purple-light); font-weight: 700; }
+
+    .progress-bar {
+      height: 6px; background: rgba(255,255,255,0.06);
+      border-radius: 3px; overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--blue));
+      width: 0; transition: width 1.5s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 0 10px rgba(139,92,246,0.5);
+    }
+
+    /* مسیر یادگیری */
+    #roadmap .timeline { position: relative; max-width: 700px; margin: 0 auto; }
+
+    #roadmap .timeline::before {
+      content: ''; position: absolute; right: 24px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--purple), var(--blue));
+      opacity: 0.3;
+    }
+
+    .timeline-item { display: flex; gap: 24px; padding: 0 60px 40px 0; position: relative; }
+    .timeline-item:last-child { padding-bottom: 0; }
+
+    .timeline-dot {
+      position: absolute; right: 15px; top: 4px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--bg-primary); border: 3px solid var(--purple);
+      box-shadow: 0 0 12px rgba(139,92,246,0.6);
+      transition: var(--transition); z-index: 1;
+    }
+
+    .timeline-item:hover .timeline-dot { background: var(--purple); transform: scale(1.3); }
+
+    /* FIX: override کردن glass-card hover برای timeline */
+    .timeline-content.glass-card { flex: 1; padding: 24px; }
+    .timeline-content.glass-card:hover { transform: translateX(-6px) translateY(0); }
+
+    .timeline-tech { font-size: 1.5rem; margin-bottom: 8px; }
+    .timeline-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+    .timeline-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.8; }
+
+    .timeline-status {
+      display: inline-block; padding: 3px 12px;
+      border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-top: 12px;
+    }
+
+    .status-active  { background: rgba(34,197,94,0.1); color: #22C55E; border: 1px solid rgba(34,197,94,0.3); }
+    .status-learning{ background: rgba(139,92,246,0.1); color: var(--purple-light); border: 1px solid rgba(139,92,246,0.3); }
+    .status-future  { background: rgba(0,191,255,0.1); color: var(--blue); border: 1px solid rgba(0,191,255,0.3); }
+
+    /* جمله الهام‌بخش */
+    #quote { padding: 80px 40px; }
+
+    .quote-card {
+      max-width: 800px; margin: 0 auto;
+      text-align: center; padding: 60px 48px; position: relative; overflow: hidden;
+    }
+
+    .quote-card::before, .quote-card::after {
+      content: '"'; position: absolute;
+      font-size: 10rem; line-height: 1;
+      color: rgba(139,92,246,0.06); font-family: Georgia, serif;
+      pointer-events: none;
+    }
+
+    .quote-card::before { top: -20px; right: 20px; }
+    .quote-card::after  { bottom: -60px; left: 20px; }
+
+    .quote-icon { font-size: 2.5rem; margin-bottom: 24px; display: block; animation: float 3s ease-in-out infinite; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+
+    .quote-text {
+      font-size: clamp(1.2rem, 3vw, 1.7rem); font-weight: 700; line-height: 1.9;
+      background: linear-gradient(135deg, var(--white), var(--purple-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 24px;
+    }
+
+    .quote-author { font-size: 0.9rem; color: var(--text-muted); }
+
+    /* تماس */
+    #contact .contact-grid {
+      display: grid; grid-template-columns: 1fr 1.5fr; gap: 32px; align-items: start;
+    }
+
+    .contact-info-card { padding: 36px; }
+    .contact-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 12px; }
+    .contact-subtitle { color: var(--text-muted); font-size: 0.9rem; line-height: 1.8; margin-bottom: 28px; }
+
+    .social-links { display: flex; flex-direction: column; gap: 12px; }
+
+    .social-link {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 18px; border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+      color: var(--white); text-decoration: none; font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .social-link:hover {
+      background: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.3);
+      transform: translateX(-4px);
+    }
+
+    .social-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; background: rgba(139,92,246,0.15); flex-shrink: 0;
+    }
+
+    .social-name { font-weight: 600; }
+    .social-handle { font-size: 0.78rem; color: var(--text-muted); margin-top: 1px; }
+
+    .contact-form-card { padding: 36px; }
+    .form-group { margin-bottom: 20px; }
+
+    .form-label { display: block; font-size: 0.88rem; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; }
+
+    .form-input, .form-textarea {
+      width: 100%; padding: 14px 18px;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm); color: var(--white);
+      font-family: 'Vazirmatn', sans-serif; font-size: 0.95rem;
+      direction: rtl; transition: var(--transition); outline: none; resize: none;
+    }
+
+    .form-input::placeholder, .form-textarea::placeholder { color: rgba(255,255,255,0.2); }
+
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--purple); background: rgba(139,92,246,0.05);
+      box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
+    }
+
+    /* FIX: نمایش خطای validation */
+    .form-input.error, .form-textarea.error {
+      border-color: #EF4444;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+    }
+
+    .form-error-msg {
+      font-size: 0.78rem; color: #EF4444; margin-top: 6px; display: none;
+    }
+
+    .form-error-msg.visible { display: block; }
+
+    .form-textarea { height: 140px; }
+    .form-submit { width: 100%; justify-content: center; }
+
+    /* FIX: disabled state برای دکمه */
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+    .form-success {
+      display: none; text-align: center; padding: 20px;
+      background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);
+      border-radius: var(--radius-sm); color: #22C55E;
+      font-weight: 600; margin-top: 16px;
+    }
+
+    /* فوتر */
+    footer {
+      position: relative; z-index: 1; text-align: center;
+      padding: 40px; border-top: 1px solid var(--glass-border);
+      background: rgba(10,10,10,0.5);
+    }
+
+    .footer-name {
+      font-size: 1.2rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 8px;
+    }
+
+    .footer-copy { font-size: 0.82rem; color: var(--text-muted); }
+    .footer-copy span { color: var(--purple-light); }
+
+    /* دکمه بازگشت به بالا */
+    #scrollTop {
+      position: fixed; bottom: 32px; left: 32px;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), #6D28D9);
+      border: none; color: #fff; font-size: 1.2rem;
+      cursor: pointer; z-index: 900;
+      opacity: 0; transform: translateY(20px) scale(0.8);
+      transition: var(--transition);
+      box-shadow: 0 0 20px rgba(139,92,246,0.4);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    #scrollTop.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+    #scrollTop:hover {
+      transform: translateY(-4px) scale(1.1);
+      box-shadow: 0 0 40px rgba(139,92,246,0.7);
+    }
+
+    /* ریسپانسیو */
+    @media (max-width: 900px) {
+      section { padding: 80px 24px; }
+      nav { padding: 14px 24px; }
+      nav.scrolled { padding: 10px 24px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      #about .about-grid { grid-template-columns: 1fr; }
+      .about-info-card { position: static; }
+      #contact .contact-grid { grid-template-columns: 1fr; }
+      #skills .skills-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 24px; }
+    }
+
+    @media (max-width: 600px) {
+      section { padding: 70px 18px; }
+      .hero-buttons { flex-direction: column; align-items: center; }
+      .btn { width: 100%; max-width: 280px; justify-content: center; }
+      #games .games-grid { grid-template-columns: 1fr; }
+      #interests .interests-grid { grid-template-columns: repeat(2, 1fr); }
+      .quote-card { padding: 40px 28px; }
+      #roadmap .timeline::before { right: 18px; }
+      .timeline-item { padding-right: 50px; }
+      .timeline-dot { right: 8px; }
+      #scrollTop { left: 20px; bottom: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
+  <div class="gradient-bg" aria-hidden="true"></div>
+
+  <nav role="navigation" aria-label="ناوبری اصلی">
+    <div class="nav-logo">ا.ق</div>
+    <ul class="nav-links" role="list">
+      <li><a href="#hero">خانه</a></li>
+      <li><a href="#about">درباره من</a></li>
+      <li><a href="#interests">علایق</a></li>
+      <li><a href="#games">بازی‌ها</a></li>
+      <li><a href="#skills">مهارت‌ها</a></li>
+      <li><a href="#roadmap">مسیر یادگیری</a></li>
+      <li><a href="#contact">تماس</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="باز کردن منو" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="منوی موبایل">
+    <a href="#hero">🏠 خانه</a>
+    <a href="#about">👤 درباره من</a>
+    <a href="#interests">✨ علایق</a>
+    <a href="#games">🎮 بازی‌ها</a>
+    <a href="#skills">⚡ مهارت‌ها</a>
+    <a href="#roadmap">🗺️ مسیر یادگیری</a>
+    <a href="#contact">📬 تماس</a>
+  </div>
+
+  <main>
+
+    <!-- Hero -->
+    <section id="hero" aria-label="صفحه اصلی">
+      <div class="hero-inner">
+        <div class="avatar-wrapper" aria-hidden="true">
+          <div class="avatar-ring"><div class="avatar-ring-inner"></div></div>
+          <div class="avatar-glow"></div>
+          <div class="avatar">🧑‍💻</div>
+        </div>
+        <div class="hero-badge">
+          <span class="badge-dot" aria-hidden="true"></span>
+          آماده یادگیری و ساختن
+        </div>
+        <h1 class="hero-name">امیرحسین قندالی</h1>
+        <!-- FIX: typewriter wrapper جداست از متن اصلی -->
+        <p class="hero-subtitle" aria-live="polite">
+          <span class="typewriter-wrapper" id="typewriter-text"></span>
+        </p>
+        <p class="hero-subtitle">
+          ۱۵ ساله، عاشق تکنولوژی، در مسیر <strong>یادگیری بی‌پایان</strong> و ساختن آینده‌ای که در ذهنم تصور می‌کنم.
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-number" data-target="15" data-suffix=" سال">0</div>
+            <div class="stat-label">سن</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" data-target="3" data-suffix="+">0</div>
+            <div class="stat-label">زبان برنامه‌نویسی</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" data-target="100" data-suffix="٪">0</div>
+            <div class="stat-label">انگیزه</div>
+          </div>
+        </div>
+        <div class="hero-buttons">
+          <a href="#about" class="btn btn-primary">بیشتر بدانید ↓</a>
+          <a href="#contact" class="btn btn-outline">تماس با من</a>
+        </div>
+      </div>
+      <div class="scroll-indicator" aria-hidden="true">
+        <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+        <span class="scroll-text">اسکرول</span>
+      </div>
+    </section>
+
+    <!-- درباره من -->
+    <section id="about" aria-labelledby="about-title">
+      <h2 class="section-title reveal" id="about-title">درباره <span>من</span></h2>
+      <div class="about-grid">
+        <div class="glass-card about-info-card reveal reveal-delay-1">
+          <div class="info-row">
+            <div class="info-icon" aria-hidden="true">👤</div>
+            <div><span class="info-label">نام کامل</span><span class="info-value">امیرحسین قندالی</span></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon" aria-hidden="true">🎂</div>
+            <div><span class="info-label">تاریخ تولد</span><span class="info-value">۱۳۹۰/۱۱/۱۹</span></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon" aria-hidden="true">📅</div>
+            <div><span class="info-label">سن</span><span class="info-value">۱۵ سال</span></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon" aria-hidden="true">💻</div>
+            <div><span class="info-label">حوزه تخصصی</span><span class="info-value">برنامه‌نویسی و AI</span></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon" aria-hidden="true">🌟</div>
+            <div><span class="info-label">هدف</span><span class="info-value">توسعه‌دهنده آینده</span></div>
+          </div>
+        </div>
+        <div class="glass-card about-text-card reveal reveal-delay-2">
+          <p class="about-desc">
+            سلام! من <span class="highlight">امیرحسین قندالی</span> هستم، یه نوجوون ۱۵ ساله که از همون کودکی دلم می‌خواست بفهمه دنیای دیجیتال چطور کار می‌کنه.
+          </p>
+          <p class="about-desc">
+            الان توی مسیر <span class="highlight">برنامه‌نویسی و هوش مصنوعی</span> هستم و هر روز چیز جدیدی یاد می‌گیرم. باور دارم که <span class="highlight-blue">سن محدودیت نیست</span> — اگه اشتیاق داشته باشی، می‌تونی هر چیزی رو یاد بگیری.
+          </p>
+          <p class="about-desc">
+            وقت آزادم رو بین <span class="highlight">انیمه، بازی‌های ویدیویی</span> و خوندن آخرین اخبار تکنولوژی تقسیم می‌کنم. رویام اینه که روزی یه ابزار هوش مصنوعی بسازم که زندگی آدم‌ها رو آسون‌تر کنه.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- علایق -->
+    <section id="interests" aria-labelledby="interests-title">
+      <h2 class="section-title reveal" id="interests-title">علایق <span>من</span></h2>
+      <div class="interests-grid">
+        <article class="glass-card interest-card reveal reveal-delay-1">
+          <span class="interest-icon" aria-hidden="true">🤖</span>
+          <h3 class="interest-name">هوش مصنوعی</h3>
+          <p class="interest-desc">دنیای AI و ماشین‌هایی که یاد می‌گیرن شگفت‌انگیزه</p>
+        </article>
+        <article class="glass-card interest-card reveal reveal-delay-2">
+          <span class="interest-icon" aria-hidden="true">💻</span>
+          <h3 class="interest-name">برنامه‌نویسی</h3>
+          <p class="interest-desc">ساختن چیزهایی از صفر با چند خط کد</p>
+        </article>
+        <article class="glass-card interest-card reveal reveal-delay-3">
+          <span class="interest-icon" aria-hidden="true">⛩️</span>
+          <h3 class="interest-name">انیمه</h3>
+          <p class="interest-desc">دنیاهای خیال‌انگیز با داستان‌های عمیق ژاپنی</p>
+        </article>
+        <article class="glass-card interest-card reveal reveal-delay-4">
+          <span class="interest-icon" aria-hidden="true">🎮</span>
+          <h3 class="interest-name">بازی‌های ویدیویی</h3>
+          <p class="interest-desc">استراتژی، اکشن و دنیاهای باز خلاقانه</p>
+        </article>
+        <article class="glass-card interest-card reveal reveal-delay-1">
+          <span class="interest-icon" aria-hidden="true">🚀</span>
+          <h3 class="interest-name">تکنولوژی</h3>
+          <p class="interest-desc">آخرین نوآوری‌ها و آینده دنیای دیجیتال</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- بازی‌ها -->
+    <section id="games" aria-labelledby="games-title">
+      <h2 class="section-title reveal" id="games-title">بازی‌های <span>مورد علاقه</span></h2>
+      <div class="games-grid">
+        <article class="glass-card game-card reveal reveal-delay-1">
+          <div class="game-header">
+            <div class="game-icon" aria-hidden="true">🔫</div>
+            <div>
+              <h3 class="game-name">Counter-Strike 2</h3>
+              <p class="game-genre">تاکتیکال شوتر</p>
+            </div>
+          </div>
+          <p class="game-desc">یه بازی که مهارت، دقت و کار تیمی رو با هم می‌طلبه. هر راند یه پازل تاکتیکیه که باید حلش کنی.</p>
+          <span class="game-tag">🎯 Competitive</span>
+        </article>
+        <article class="glass-card game-card reveal reveal-delay-2">
+          <div class="game-header">
+            <div class="game-icon" aria-hidden="true">⛏️</div>
+            <div>
+              <h3 class="game-name">Minecraft</h3>
+              <p class="game-genre">سندباکس / خلاقیت</p>
+            </div>
+          </div>
+          <p class="game-desc">جایی که تنها محدودیت تخیل توئه. از ساخت خانه تا برنامه‌نویسی با Redstone — بی‌نهایت امکانات.</p>
+          <span class="game-tag">🏗️ Creative</span>
+        </article>
+        <article class="glass-card game-card reveal reveal-delay-3">
+          <div class="game-header">
+            <div class="game-icon" aria-hidden="true">🪖</div>
+            <div>
+              <h3 class="game-name">Call of Duty</h3>
+              <p class="game-genre">اکشن / شوتر</p>
+            </div>
+          </div>
+          <p class="game-desc">هیجان، سرعت و اکشن خالص. هر بازی یه تجربه متفاوته پر از لحظه‌های به‌یادموندنی.</p>
+          <span class="game-tag">⚡ Action</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- مهارت‌ها -->
+    <section id="skills" aria-labelledby="skills-title">
+      <h2 class="section-title reveal" id="skills-title"><span>مهارت‌های</span> من</h2>
+      <div class="skills-grid">
+        <div class="glass-card skill-card reveal reveal-delay-1">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">💻</span>
+            <div><h3 class="skill-title">برنامه‌نویسی</h3><p class="skill-level">در حال یادگیری</p></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">HTML & CSS</span><span class="skill-percent">70٪</span></div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" aria-label="HTML و CSS — ۷۰٪">
+              <div class="progress-fill" data-width="70"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">JavaScript</span><span class="skill-percent">50٪</span></div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" aria-label="جاوااسکریپت — ۵۰٪">
+              <div class="progress-fill" data-width="50"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">Python</span><span class="skill-percent">40٪</span></div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" aria-label="پایتون — ۴۰٪">
+              <div class="progress-fill" data-width="40"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card skill-card reveal reveal-delay-2">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">🤖</span>
+            <div><h3 class="skill-title">هوش مصنوعی</h3><p class="skill-level">مبتدی پیشرفته</p></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">مفاهیم پایه AI</span><span class="skill-percent">60٪</span></div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="مفاهیم پایه AI — ۶۰٪">
+              <div class="progress-fill" data-width="60"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">استفاده از ابزارهای AI</span><span class="skill-percent">80٪</span></div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="ابزارهای AI — ۸۰٪">
+              <div class="progress-fill" data-width="80"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">Machine Learning</span><span class="skill-percent">25٪</span></div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" aria-label="یادگیری ماشین — ۲۵٪">
+              <div class="progress-fill" data-width="25"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card skill-card reveal reveal-delay-3">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">🎮</span>
+            <div><h3 class="skill-title">گیمینگ</h3><p class="skill-level">نیمه‌حرفه‌ای</p></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">Counter-Strike 2</span><span class="skill-percent">75٪</span></div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="Counter-Strike 2 — ۷۵٪">
+              <div class="progress-fill" data-width="75"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">Minecraft</span><span class="skill-percent">85٪</span></div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="Minecraft — ۸۵٪">
+              <div class="progress-fill" data-width="85"></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span class="skill-name">تفکر استراتژیک</span><span class="skill-percent">70٪</span></div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" aria-label="تفکر استراتژیک — ۷۰٪">
+              <div class="progress-fill" data-width="70"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- مسیر یادگیری -->
+    <section id="roadmap" aria-labelledby="roadmap-title">
+      <h2 class="section-title reveal" id="roadmap-title">مسیر <span>یادگیری</span></h2>
+      <div class="timeline">
+        <div class="timeline-item reveal reveal-delay-1">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-tech" aria-hidden="true">🌐</div>
+            <h3 class="timeline-title">HTML & CSS</h3>
+            <p class="timeline-desc">یادگیری ساختار وب، طراحی صفحات، Flexbox، Grid و انیمیشن‌های CSS</p>
+            <span class="timeline-status status-active">✅ تکمیل شده</span>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-2">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-tech" aria-hidden="true">⚡</div>
+            <h3 class="timeline-title">JavaScript</h3>
+            <p class="timeline-desc">مفاهیم پایه، DOM manipulation، رویدادها، async/await و پروژه‌های عملی</p>
+            <span class="timeline-status status-learning">🔄 در حال یادگیری</span>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-3">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-tech" aria-hidden="true">🖥️</div>
+            <h3 class="timeline-title">توسعه وب کامل</h3>
+            <p class="timeline-desc">فریم‌ورک‌های مدرن (React یا Vue)، Backend، API و دیتابیس</p>
+            <span class="timeline-status status-future">🎯 هدف آینده</span>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-4">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-content glass-card">
+            <div class="timeline-tech" aria-hidden="true">🤖</div>
+            <h3 class="timeline-title">هوش مصنوعی و ML</h3>
+            <p class="timeline-desc">Python، NumPy، TensorFlow، ساخت مدل‌های یادگیری ماشین</p>
+            <span class="timeline-status status-future">🔮 رویای بزرگ</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- جمله الهام‌بخش -->
+    <section id="quote" aria-label="جمله الهام‌بخش">
+      <div class="glass-card quote-card reveal">
+        <span class="quote-icon" aria-hidden="true">💡</span>
+        <blockquote class="quote-text">"هر روز فرصتی برای یادگیری چیزی جدید است."</blockquote>
+        <p class="quote-author">— امیرحسین قندالی</p>
+      </div>
+    </section>
+
+    <!-- تماس -->
+    <section id="contact" aria-labelledby="contact-title">
+      <h2 class="section-title reveal" id="contact-title">تماس <span>با من</span></h2>
+      <div class="contact-grid">
+        <div class="glass-card contact-info-card reveal reveal-delay-1">
+          <h3 class="contact-title">بیا حرف بزنیم! 👋</h3>
+          <p class="contact-subtitle">اگه ایده‌ای داری، سوالی داری، یا فقط می‌خوای سلام بدی — خوشحال می‌شم پیامتو ببینم.</p>
+          <div class="social-links">
+            <a href="#" class="social-link" aria-label="گیت‌هاب — به زودی">
+              <div class="social-icon" aria-hidden="true">🐙</div>
+              <div><div class="social-name">GitHub</div><div class="social-handle">به زودی...</div></div>
+            </a>
+            <a href="#" class="social-link" aria-label="تلگرام — AMIRHOSSEIN_321">
+              <div class="social-icon" aria-hidden="true">✈️</div>
+              <div><div class="social-name">Telegram</div><div class="social-handle">AMIRHOSSEIN_321</div></div>
+            </a>
+            <a href="#" class="social-link" aria-label="اینستاگرام — amirhossein_142">
+              <div class="social-icon" aria-hidden="true">📷</div>
+              <div><div class="social-name">Instagram</div><div class="social-handle">amirhossein_142</div></div>
+            </a>
+          </div>
+        </div>
+
+        <div class="glass-card contact-form-card reveal reveal-delay-2">
+          <form id="contact-form" novalidate aria-label="فرم تماس">
+            <div class="form-group">
+              <label class="form-label" for="contact-name">نام شما</label>
+              <input class="form-input" type="text" id="contact-name" name="name"
+                placeholder="مثال: علی محمدی" required autocomplete="name"
+                minlength="2" maxlength="60" />
+              <span class="form-error-msg" id="name-error">لطفاً نام خود را وارد کنید.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contact-email">ایمیل</label>
+              <input class="form-input" type="email" id="contact-email" name="email"
+                placeholder="example@email.com" required autocomplete="email" dir="ltr" />
+              <span class="form-error-msg" id="email-error">لطفاً یک ایمیل معتبر وارد کنید.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contact-message">پیام</label>
+              <textarea class="form-textarea" id="contact-message" name="message"
+                placeholder="پیام خودتو اینجا بنویس..." required minlength="10" maxlength="1000"></textarea>
+              <span class="form-error-msg" id="message-error">پیام باید حداقل ۱۰ کاراکتر باشد.</span>
+            </div>
+            <button type="submit" class="btn btn-primary form-submit">ارسال پیام ✉️</button>
+            <div class="form-success" id="form-success" role="alert" aria-live="polite">
+              ✅ پیامت با موفقیت ارسال شد! ممنون که نوشتی.
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer role="contentinfo">
+    <p class="footer-name">امیرحسین قندالی</p>
+    <p class="footer-copy">ساخته شده با <span>❤️</span> و یه عالمه کافئین — <span>۱۴۰۵</span></p>
+  </footer>
+
+  <button id="scrollTop" aria-label="بازگشت به بالای صفحه">↑</button>
+
+  <script>
+    'use strict';
+
+    /* ============================================
+       Particles
+       FIX: تعداد کمتر روی موبایل + requestAnimationFrame cleanup
+    ============================================ */
+    function initParticles() {
+      const canvas = document.getElementById('particles-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let W, H, particles = [], animId;
+      const isMobile = window.innerWidth < 768;
+
+      function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function createParticle() {
+        return {
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: Math.random() * 1.5 + 0.3,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          alpha: Math.random() * 0.5 + 0.1,
+          color: Math.random() > 0.5 ? '139,92,246' : '0,191,255'
+        };
+      }
+
+      function init() {
+        particles = [];
+        /* FIX: روی موبایل نصف تعداد — performance بهتر */
+        const base  = Math.floor((W * H) / 12000);
+        const count = isMobile ? Math.min(50, base) : Math.min(120, base);
+        for (let i = 0; i < count; i++) particles.push(createParticle());
+      }
+
+      function drawConnections() {
+        const maxDist = isMobile ? 80 : 120;
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx   = particles[i].x - particles[j].x;
+            const dy   = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < maxDist) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(139,92,246,${0.08 * (1 - dist / maxDist)})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      function tick() {
+        ctx.clearRect(0, 0, W, H);
+        drawConnections();
+        for (const p of particles) {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0 || p.x > W) p.vx *= -1;
+          if (p.y < 0 || p.y > H) p.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${p.color},${p.alpha})`;
+          ctx.fill();
+        }
+        animId = requestAnimationFrame(tick);
+      }
+
+      resize(); init(); tick();
+
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          cancelAnimationFrame(animId);
+          resize(); init(); tick();
+        }, 200);
+      });
+    }
+
+    /* ============================================
+       Scroll Reveal
+    ============================================ */
+    function initScrollReveal() {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    }
+
+    /* ============================================
+       Progress Bars
+       FIX: threshold پایین‌تر — روی موبایل که ارتفاع viewport کمه حتماً trigger بشه
+    ============================================ */
+    function initProgressBars() {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.style.width = e.target.dataset.width + '%';
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.progress-fill').forEach(b => io.observe(b));
+    }
+
+    /* ============================================
+       Navbar
+    ============================================ */
+    function initNavbar() {
+      const nav       = document.querySelector('nav');
+      const hamburger = document.getElementById('hamburger');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      window.addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', window.scrollY > 50);
+      }, { passive: true });
+
+      function closeMenu() {
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+        mobileMenu.classList.remove('open');
+        document.body.classList.remove('menu-open');
+      }
+
+      function openMenu() {
+        hamburger.classList.add('active');
+        hamburger.setAttribute('aria-expanded', 'true');
+        mobileMenu.classList.add('open');
+        document.body.classList.add('menu-open');
+      }
+
+      hamburger.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.contains('open');
+        isOpen ? closeMenu() : openMenu();
+      });
+
+      /* FIX: بستن منو با کلیک روی لینک‌ها */
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      /* FIX: بستن منو با Escape */
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+      });
+    }
+
+    /* ============================================
+       Scroll Top
+    ============================================ */
+    function initScrollTop() {
+      const btn = document.getElementById('scrollTop');
+      window.addEventListener('scroll', () => {
+        btn.classList.toggle('visible', window.scrollY > 400);
+      }, { passive: true });
+      btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    }
+
+    /* ============================================
+       فرم تماس
+       FIX: validation واقعی + پیام خطا برای هر فیلد
+    ============================================ */
+    function initContactForm() {
+      const form = document.getElementById('contact-form');
+      if (!form) return;
+
+      const nameInput    = document.getElementById('contact-name');
+      const emailInput   = document.getElementById('contact-email');
+      const msgInput     = document.getElementById('contact-message');
+      const nameError    = document.getElementById('name-error');
+      const emailError   = document.getElementById('email-error');
+      const messageError = document.getElementById('message-error');
+      const successEl    = document.getElementById('form-success');
+      const submitBtn    = form.querySelector('.form-submit');
+
+      function validateEmail(v) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+      }
+
+      function setError(input, errorEl, show) {
+        input.classList.toggle('error', show);
+        errorEl.classList.toggle('visible', show);
+      }
+
+      /* پاک کردن خطا هنگام تایپ */
+      nameInput.addEventListener('input',  () => setError(nameInput,  nameError,    false));
+      emailInput.addEventListener('input', () => setError(emailInput, emailError,   false));
+      msgInput.addEventListener('input',   () => setError(msgInput,   messageError, false));
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let valid = true;
+
+        if (nameInput.value.trim().length < 2) {
+          setError(nameInput, nameError, true); valid = false;
+        }
+        if (!validateEmail(emailInput.value)) {
+          setError(emailInput, emailError, true); valid = false;
+        }
+        if (msgInput.value.trim().length < 10) {
+          setError(msgInput, messageError, true); valid = false;
+        }
+
+        if (!valid) return;
+
+        submitBtn.disabled    = true;
+        submitBtn.textContent = 'در حال ارسال...';
+
+        setTimeout(() => {
+          form.reset();
+          submitBtn.disabled   = false;
+          submitBtn.innerHTML  = 'ارسال پیام ✉️';
+          successEl.style.display = 'block';
+          setTimeout(() => { successEl.style.display = 'none'; }, 5000);
+        }, 1500);
+      });
+    }
+
+    /* ============================================
+       تایپیست
+       FIX: bug اصلی — وقتی ci به -1 می‌رسید خطا می‌داد
+       حالا از length صریح استفاده می‌کنیم
+    ============================================ */
+    function initTypewriter() {
+      const el = document.getElementById('typewriter-text');
+      if (!el) return;
+
+      const texts   = ['برنامه‌نویس جوان', 'عاشق تکنولوژی', 'گیمر حرفه‌ای', 'یادگیرنده هوش مصنوعی'];
+      let ti        = 0;   /* ایندکس متن فعلی */
+      let ci        = 0;   /* تعداد کاراکترهای نمایش‌داده‌شده */
+      let deleting  = false;
+      let paused    = false;
+
+      function tick() {
+        const current = texts[ti];
+
+        if (!deleting) {
+          /* تایپ کردن */
+          ci++;
+          el.textContent = current.substring(0, ci);
+          if (ci >= current.length) {
+            /* مکث بعد از تکمیل کلمه */
+            paused = true;
+            setTimeout(() => { paused = false; deleting = true; schedule(); }, 2000);
+            return;
+          }
+        } else {
+          /* پاک کردن */
+          ci--;
+          el.textContent = current.substring(0, ci);
+          if (ci <= 0) {
+            /* رفتن به متن بعدی */
+            ci       = 0;
+            deleting = false;
+            ti       = (ti + 1) % texts.length;
+          }
+        }
+
+        schedule();
+      }
+
+      function schedule() {
+        if (paused) return;
+        const delay = deleting ? 50 : 100;
+        setTimeout(tick, delay);
+      }
+
+      schedule();
+    }
+
+    /* ============================================
+       شمارنده‌ها
+       FIX: مقدار اولیه HTML لاتین بود (0) نه فارسی — parseInt حالا کار می‌کنه
+       FIX: اضافه شدن suffix مستقیم بدون فاصله اضافه
+    ============================================ */
+    function initCounters() {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const el     = e.target;
+          const target = parseInt(el.dataset.target, 10);
+          const suffix = el.dataset.suffix || '';
+          let current  = 0;
+          const duration = 1500; /* ms */
+          const steps    = 60;
+          const step     = Math.ceil(target / steps);
+          const interval = Math.floor(duration / steps);
+
+          const timer = setInterval(() => {
+            current = Math.min(current + step, target);
+            el.textContent = current + suffix;
+            if (current >= target) clearInterval(timer);
+          }, interval);
+
+          io.unobserve(el);
+        });
+      }, { threshold: 0.5 });
+
+      document.querySelectorAll('.stat-number[data-target]').forEach(c => io.observe(c));
+    }
+
+    /* ============================================
+       Init
+    ============================================ */
+    document.addEventListener('DOMContentLoaded', () => {
+      initParticles();
+      initScrollReveal();
+      initProgressBars();
+      initNavbar();
+      initScrollTop();
+      initContactForm();
+      initTypewriter();
+      initCounters();
+    });
+  </script>
+</body>
+</html>
